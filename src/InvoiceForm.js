@@ -1,12 +1,31 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
-function InvoiceForm({ addInvoice }) {
+function InvoiceForm({ addInvoice, editingInvoice }) {
   const [invoice, setInvoice] = useState({ items: [] });
-  const [item, setItem] = useState("");
+  const [item, setItem] = useState({
+    serialNumber: "",
+    description: "",
+    quantity: 1,
+    rate: 0,
+    amount: 0,
+  });
+
+  useEffect(() => {
+    if (editingInvoice) {
+      setInvoice(editingInvoice);
+    }
+  }, [editingInvoice]);
 
   const handleAddItem = () => {
+    setItem({ ...item, amount: item.quantity * item.rate });
     setInvoice({ ...invoice, items: [...invoice.items, item] });
-    setItem("");
+    setItem({
+      serialNumber: "",
+      description: "",
+      quantity: 1,
+      rate: 0,
+      amount: 0,
+    });
   };
 
   const handleSubmit = (e) => {
@@ -27,11 +46,34 @@ function InvoiceForm({ addInvoice }) {
         />
       </div>
       <div>
-        <label>Items: </label>
+        <h3>Items</h3>
+        <label>Serial Number: </label>
         <input
           type="text"
-          value={item}
-          onChange={(e) => setItem(e.target.value)}
+          value={item.serialNumber}
+          onChange={(e) => setItem({ ...item, serialNumber: e.target.value })}
+        />
+        <label>Description: </label>
+        <input
+          type="text"
+          value={item.description}
+          onChange={(e) => setItem({ ...item, description: e.target.value })}
+        />
+        <label>Quantity: </label>
+        <input
+          type="number"
+          value={item.quantity}
+          onChange={(e) =>
+            setItem({ ...item, quantity: parseInt(e.target.value) })
+          }
+        />
+        <label>Rate: </label>
+        <input
+          type="number"
+          value={item.rate}
+          onChange={(e) =>
+            setItem({ ...item, rate: parseFloat(e.target.value) })
+          }
         />
         <button type="button" onClick={handleAddItem}>
           Add Item
@@ -39,7 +81,10 @@ function InvoiceForm({ addInvoice }) {
       </div>
       <ul>
         {invoice.items.map((itm, index) => (
-          <li key={index}>{itm}</li>
+          <li key={index}>
+            {itm.serialNumber} - {itm.description} - {itm.quantity} x {itm.rate}{" "}
+            = {itm.amount}
+          </li>
         ))}
       </ul>
       <button type="submit">Save Invoice</button>

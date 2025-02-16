@@ -18,3 +18,11 @@
   button {
     margin-top: 10px;
   }
+  
+  .navigation-bar {
+    margin: 20px;
+  }
+  
+  .navigation-bar button, .navigation-bar input {
+    margin: 5px;
+  }
